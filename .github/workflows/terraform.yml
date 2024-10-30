@@ -33,6 +33,9 @@ jobs:
         run: |
           az login --service-principal -u 7af10cbf-ca0c-4e63-9266-a534293c6b06 -p hGb8Q~Qm4nR4yb36MlLoKjNW4F~cRHv1ucHJvbhm --tenant a46bb9d8-794b-41bb-80b3-24ab243b5480
 
+      - name: Initialize Terraform with Azure Backend
+        run: terraform init
+
       - name: Terraform Plan
         run: terraform plan -out=tfplan
 
