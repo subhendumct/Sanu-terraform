@@ -1,4 +1,4 @@
-name: Terraform CI/CD with Azure Backend on Windows
+name: Deploy Terraform to Azure
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   terraform:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     env:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
@@ -31,23 +31,20 @@ jobs:
 
       - name: Login to Azure using Service Principal
         run: |
-          az login --service-principal --username ${{ secrets.ARM_CLIENT_ID }} --password ${{ secrets.ARM_CLIENT_SECRET }} --tenant ${{ secrets.ARM_TENANT_ID }}
-        shell: pwsh
+          az login --service-principal -u ${{ secrets.ARM_CLIENT_ID }} -p ${{ secrets.ARM_CLIENT_SECRET }} --tenant ${{ secrets.ARM_TENANT_ID }}
+          az account set --subscription ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
       - name: Initialize Terraform with Azure Backend
         run: |
-          terraform init `
-            -backend-config="storage_account_name=${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}" `
-            -backend-config="container_name=${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}" `
-            -backend-config="key=sanuterraform.tfstate" `
+          terraform init \
+            -backend-config="storage_account_name=${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}" \
+            -backend-config="container_name=${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}" \
+            -backend-config="key=terraform.tfstate" \
             -backend-config="access_key=${{ secrets.AZURE_STORAGE_ACCESS_KEY }}"
-        shell: pwsh
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan
-        shell: pwsh
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve tfplan
-        shell: pwsh
