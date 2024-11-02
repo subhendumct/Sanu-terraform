@@ -21,10 +21,21 @@ jobs:
           inlineScript: |
             az account show
 
+  terraform:
+    name: Deploy Terraform Infrastructure
+    runs-on: ubuntu-latest
+
+    env:
+      ARM_ACCESS_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.5.7  # Specify the required Terraform version
+          terraform_version: 1.5.3  # Specify the required Terraform version
 
       - name: Terraform Init
         run: terraform init
