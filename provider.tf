@@ -4,11 +4,16 @@ terraform {
       source = "hashicorp/azurerm"
       version = "4.7.0"
     }
+  github = {
+      source  = "integrations/github"
+      version = "~> 4.0"
+    }
+
   }
 }
 
 provider "azurerm" {
   features {
-    
   }
 }
+
