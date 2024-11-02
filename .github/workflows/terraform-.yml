@@ -29,7 +29,7 @@ jobs:
 
       - name: Change Directory to Terraform Code
         # Update the path if your Terraform code is in a subfolder
-        run: cd ./terraform
+        run: cd ./
 
       - name: List Directory Contents (Debug Step)
         shell: pwsh
