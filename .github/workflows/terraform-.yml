@@ -2,7 +2,7 @@
 
 on: [push]
 
-name: Run Azure Login With a Service Principal Secret
+name: Run Azure Login With a Service Principal Secret 
 
 jobs:
 
