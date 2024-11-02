@@ -19,14 +19,14 @@ jobs:
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-      ARM_ACCESS_KEY: ${{ secrets.ARM_STORAGE_KEY }}
+      ARM_ACCESS_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
       - name: Login to Azure
-        uses: azure/login@v1.4
+        uses: azure/login@v1
         with:
           client-id: ${{ secrets.ARM_CLIENT_ID }}
           client-secret: ${{ secrets.ARM_CLIENT_SECRET }}
@@ -47,4 +47,4 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
         env:
-          ARM_ACCESS_KEY: ${{ secrets.ARM_STORAGE_KEY }}
+          ARM_ACCESS_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
