@@ -1,11 +1,11 @@
-name: Run Azure Login With a Service Principal Secret 
+name: Deploy Terraform Infrastructure using GitHub CI/CD
 
 on: 
   push:
 
 jobs:
   build-and-deploy:
-    name: Deploy Terraform Infrastructure using GitHub CI/CD
+    name: Setiing up the runner and logging-in
     runs-on: windows-latest
     env:
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
@@ -25,11 +25,8 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.9.8  # Specify the required Terraform version
+          terraform_version: 1.9.8
 
-      - name: Change Directory to Terraform Code
-        # Update the path if your Terraform code is in a subfolder
-        run: cd ./
 
       - name: List Directory Contents (Debug Step)
         shell: pwsh
@@ -58,9 +55,9 @@ jobs:
             -backend-config="resource_group_name=${{ secrets.AZURE_RESOURCE_GROUP }}" `
             -backend-config="storage_account_name=${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}" `
             -backend-config="container_name=${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}" `
-            -backend-config="key=terraform.tfstate"
+            -backend-config="key=terraform.tfstate" || exit 1
 
-      # Run a terraform plan for pull requests only
+      # Run a terraform plan only for pull requests (if needed)
       - name: Terraform Plan
         id: plan
         shell: pwsh
