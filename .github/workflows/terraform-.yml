@@ -1,21 +1,15 @@
-name: Deploy Terraform to Azure
+# File: .github/workflows/workflow.yml
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-  workflow_dispatch:
+on: [push]
+
+name: Run Azure Login With a Service Principal Secret
 
 jobs:
-  terraform:
-    name: Deploy Terraform Infrastructure
-    runs-on: ubuntu-latest
 
+  build-and-deploy:
+    runs-on: ubuntu-latest
     steps:
-      - name: Login to Azure
+
       - uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
@@ -26,9 +20,6 @@ jobs:
           azcliversion: latest
           inlineScript: |
             az account show
-            
-      - name: Checkout Repository
-        uses: actions/checkout@v2
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
