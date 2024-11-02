@@ -55,7 +55,8 @@ jobs:
             -backend-config="resource_group_name=${{ secrets.AZURE_RESOURCE_GROUP }}" `
             -backend-config="storage_account_name=${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}" `
             -backend-config="container_name=${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}" `
-            -backend-config="key=sanu940.tfstate" || exit 1
+            -backend-config="key=sanu940.tfstate" `
+            -backend-config="access_key=${{ secrets.AZURE_STORAGE_ACCESS_KEY }}" || exit 1
 
       # Run a terraform plan only for pull requests (if needed)
       - name: Terraform Plan
