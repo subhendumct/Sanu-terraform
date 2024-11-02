@@ -1,16 +1,22 @@
-# File: .github/workflows/workflow.yml
-
-on: [push]
-
 name: Run Azure Login With a Service Principal Secret 
 
-jobs:
+on: 
+  push:
 
+jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    steps:
+    name: Deploy Terraform Infrastructure
+    
+    env:
+      ARM_ACCESS_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
 
-      - uses: azure/login@v2
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Login to Azure
+        uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
@@ -20,17 +26,6 @@ jobs:
           azcliversion: latest
           inlineScript: |
             az account show
-
-  terraform:
-    name: Deploy Terraform Infrastructure
-    runs-on: ubuntu-latest
-
-    env:
-      ARM_ACCESS_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
@@ -45,5 +40,3 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
-        env:
-          ARM_ACCESS_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
