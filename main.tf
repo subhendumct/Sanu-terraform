@@ -1,7 +1,7 @@
 
 # Define variables
 variable "resource_group_name" {
-  default = "sanu"
+  default = "sanurg"
 }
 
 variable "location" {
