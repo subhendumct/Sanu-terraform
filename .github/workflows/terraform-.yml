@@ -17,11 +17,20 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+      - name: Verify Azure Login Details - PreLogin
+        shell: pwsh
+        run: |
+          az account show
       - name: Login to Azure
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-
+          
+      - name: Verify Azure Login Details - PostLogin
+        shell: pwsh
+        run: |
+          az account show
+          
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
