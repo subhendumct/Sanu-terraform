@@ -1,4 +1,4 @@
-name: Run Azure Login With a Service Principal Secret 
+name: Deployingh infra using Terraform and GitHub Action
 
 on: 
   push:
@@ -21,16 +21,20 @@ jobs:
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-          
-      - name: Verify Azure Login Details - PostLogin
-        shell: pwsh
-        run: |
-          az account show
-          
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.9.8  # Specify the required Terraform version
+
+      - name: Change Directory to Terraform Code
+        # Update the path if your Terraform code is in a subfolder, e.g., "cd path/to/terraform"
+        run: cd ./
+
+      - name: Verify Azure Login Details
+        shell: pwsh
+        run: |
+          az account show
 
       - name: Terraform Init
         id: init
@@ -39,7 +43,12 @@ jobs:
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-        run: terraform init 
+        run: |
+          terraform init `
+            -backend-config="resource_group_name=${{ secrets.AZURE_RESOURCE_GROUP }}" `
+            -backend-config="storage_account_name=${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}" `
+            -backend-config="container_name=${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}" `
+            -backend-config="key=terraform.tfstate"
 
       # Run a terraform plan for pull requests only
       - name: Terraform Plan
