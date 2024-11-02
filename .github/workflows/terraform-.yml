@@ -21,15 +21,12 @@ jobs:
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+          enable-AzPSSession: true
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.9.8  # Specify the required Terraform version
-
-      - name: Change Directory to Terraform Code
-        # Update the path if your Terraform code is in a subfolder, e.g., "cd path/to/terraform"
-        run: cd ./
 
       - name: Verify Azure Login Details
         shell: pwsh
